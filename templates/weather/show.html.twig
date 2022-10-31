@@ -7,46 +7,52 @@
 
     <table class="table">
         <tbody>
+        {% if is_granted('ROLE_ADMIN') %}
             <tr>
                 <th>Id</th>
                 <td>{{ weather.id }}</td>
             </tr>
-            <tr>
-                <th>Time</th>
-                <td>{{ weather.time ? weather.time|date('Y-m-d H:i:s') : '' }}</td>
-            </tr>
-            <tr>
-                <th>Cloudiness</th>
-                <td>{{ weather.cloudiness }}</td>
-            </tr>
-            <tr>
-                <th>Temperature</th>
-                <td>{{ weather.temperature }}</td>
-            </tr>
-            <tr>
-                <th>Precipitation</th>
-                <td>{{ weather.precipitation }}</td>
-            </tr>
-            <tr>
-                <th>Humidity</th>
-                <td>{{ weather.humidity }}</td>
-            </tr>
-            <tr>
-                <th>Air_pressure</th>
-                <td>{{ weather.airPressure }}</td>
-            </tr>
-            <tr>
-                <th>City</th>
-                <td>
-                    <a href="{{ path('app_country_show', {'id': weather.city.id}) }}">{{ weather.city }}</a>
-                </td>
-            </tr>
+        {% endif %}
+        <tr>
+            <th>Time</th>
+            <td>{{ weather.time ? weather.time|date('Y-m-d H:i:s') : '' }}</td>
+        </tr>
+        <tr>
+            <th>Cloudiness</th>
+            <td>{{ weather.cloudiness }}</td>
+        </tr>
+        <tr>
+            <th>Temperature</th>
+            <td>{{ weather.temperature }}</td>
+        </tr>
+        <tr>
+            <th>Precipitation</th>
+            <td>{{ weather.precipitation }}</td>
+        </tr>
+        <tr>
+            <th>Humidity</th>
+            <td>{{ weather.humidity }}</td>
+        </tr>
+        <tr>
+            <th>Air_pressure</th>
+            <td>{{ weather.airPressure }}</td>
+        </tr>
+        <tr>
+            <th>City</th>
+            <td>
+                <a href="{{ path('app_country_show', {'id': weather.city.id}) }}">{{ weather.city }}</a>
+            </td>
+        </tr>
         </tbody>
     </table>
 
     <a href="{{ path('app_weather_index') }}">back to list</a>
 
-    <a href="{{ path('app_weather_edit', {'id': weather.id}) }}">edit</a>
+    {% if is_granted('ROLE_WEATHER_EDIT') %}
+        <a href="{{ path('app_weather_edit', {'id': weather.id}) }}">edit</a>
+    {% endif %}
 
-    {{ include('weather/_delete_form.html.twig') }}
+    {% if is_granted('ROLE_MEASURER') %}
+        {{ include('weather/_delete_form.html.twig') }}
+    {% endif %}
 {% endblock %}

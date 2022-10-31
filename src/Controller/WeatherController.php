@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Weather;
 use App\Form\WeatherType;
 use App\Repository\WeatherRepository;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -22,6 +23,7 @@ class WeatherController extends AbstractController
     }
 
     #[Route('/new', name: 'app_weather_new', methods: ['GET', 'POST'])]
+    #[IsGranted('ROLE_MEASURER', message: 'ACCESS DENIED', statusCode: 403)]
     public function new(Request $request, WeatherRepository $weatherRepository): Response
     {
         $weather = new Weather();
@@ -49,6 +51,7 @@ class WeatherController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'app_weather_edit', methods: ['GET', 'POST'])]
+    #[IsGranted('ROLE_WEATHER_EDIT', message: 'ACCESS DENIED', statusCode: 403)]
     public function edit(Request $request, Weather $weather, WeatherRepository $weatherRepository): Response
     {
         $form = $this->createForm(WeatherType::class, $weather);
@@ -67,6 +70,7 @@ class WeatherController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_weather_delete', methods: ['POST'])]
+    #[IsGranted('ROLE_MEASURER', message: 'ACCESS DENIED', statusCode: 403)]
     public function delete(Request $request, Weather $weather, WeatherRepository $weatherRepository): Response
     {
         if ($this->isCsrfTokenValid('delete'.$weather->getId(), $request->request->get('_token'))) {

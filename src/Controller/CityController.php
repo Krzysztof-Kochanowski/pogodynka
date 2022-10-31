@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\City;
 use App\Form\CityType;
 use App\Repository\CityRepository;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -22,6 +23,7 @@ class CityController extends AbstractController
     }
 
     #[Route('/new', name: 'app_city_new', methods: ['GET', 'POST'])]
+    #[IsGranted('ROLE_CARTOGRAPHER', message: 'ACCESS DENIED', statusCode: 403)]
     public function new(Request $request, CityRepository $cityRepository): Response
     {
         $city = new City();
@@ -49,6 +51,7 @@ class CityController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'app_city_edit', methods: ['GET', 'POST'])]
+    #[IsGranted('ROLE_CITY_EDIT', message: 'ACCESS DENIED', statusCode: 403)]
     public function edit(Request $request, City $city, CityRepository $cityRepository): Response
     {
         $form = $this->createForm(CityType::class, $city);
@@ -67,7 +70,8 @@ class CityController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_city_delete', methods: ['POST'])]
-    public function delete(Request $request, City $city, CityRepository $cityRepository): Response
+    #[IsGranted('ROLE_CARTOGRAPHER', message: 'ACCESS DENIED', statusCode: 403)]
+    function delete(Request $request, City $city, CityRepository $cityRepository): Response
     {
         if ($this->isCsrfTokenValid('delete'.$city->getId(), $request->request->get('_token'))) {
             $cityRepository->remove($city, true);

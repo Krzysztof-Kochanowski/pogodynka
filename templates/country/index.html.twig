@@ -8,7 +8,9 @@
     <table class="table">
         <thead>
             <tr>
-                <th>Id</th>
+                {% if is_granted('ROLE_ADMIN') %}
+                    <th>Id</th>
+                {% endif %}
                 <th>Name</th>
                 <th>Country_code</th>
                 <th>Capital_name</th>
@@ -18,13 +20,17 @@
         <tbody>
         {% for country in countries %}
             <tr>
-                <td>{{ country.id }}</td>
+                {% if is_granted('ROLE_ADMIN') %}
+                    <td>{{ country.id }}</td>
+                {% endif %}
                 <td>{{ country.name }}</td>
                 <td>{{ country.countryCode }}</td>
                 <td>{{ country.capitalName }}</td>
                 <td>
                     <a href="{{ path('app_country_show', {'id': country.id}) }}">show</a>
-                    <a href="{{ path('app_country_edit', {'id': country.id}) }}">edit</a>
+                    {% if is_granted('ROLE_CARTOGRAPHER') %}
+                        <a href="{{ path('app_country_edit', {'id': country.id}) }}">edit</a>
+                    {% endif %}
                 </td>
             </tr>
         {% else %}
@@ -35,5 +41,7 @@
         </tbody>
     </table>
 
-    <a href="{{ path('app_country_new') }}">Create new</a>
+    {% if is_granted('ROLE_CARTOGRAPHER') %}
+        <a href="{{ path('app_country_new') }}">Create new</a>
+    {% endif %}
 {% endblock %}
